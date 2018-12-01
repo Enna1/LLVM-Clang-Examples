@@ -32,14 +32,14 @@ int main() {
 
 
 
-How to build:
+Build & Use:
 
 ```bash
 $ cd c-ast-interpreter
 $ cmake .
 $ make
+$ ./ast-interpreter "`cat test/test0.c`"
 ```
-
 
 
 
