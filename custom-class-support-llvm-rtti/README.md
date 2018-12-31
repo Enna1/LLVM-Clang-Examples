@@ -4,9 +4,9 @@ LLVM/Clang Version: 5.0.1
 
 About LLVM-Style RTTI, see https://inside-llvm-clang-soure-code.readthedocs.io/en/latest/beginning/RTTI-in-LLVM.html for detail.
 
-This is the sample code used to demonstrate to how to set up LLVM-Style RTTI for your custom class.
+This is the sample code used to demonstrate how to set up LLVM-Style RTTI for your custom class.
 
-The class class hierarchy in sample code.
+Here is the class hierarchy in sample code.
 
 ```
 | Shape
