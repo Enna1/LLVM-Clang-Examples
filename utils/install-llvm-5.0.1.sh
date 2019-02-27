@@ -71,6 +71,7 @@ sudo apt-get install texinfo bison flex
 make -j${num_cores} all-ld
 
 # build llvm & install
+# To preserve "llvm::Value::dump() const", use -DLLVM_ENABLE_ASSERTIONS=ON, or -DLLVM_ENABLE_DUMP=ON with cmake. LLVM_ENABLE_ASSERTIONS defaults to ON if and only if CMAKE_BUILD_TYPE is Debug.
 cd ../..
 echo "LLVM source code and plugins are set up"
 echo "Build the LLVM project"

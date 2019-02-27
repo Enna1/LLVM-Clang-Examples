@@ -4,7 +4,7 @@
 
 LLVM/Clang Version: 5.0.1
 
-A LLVM pass that implements a flow-sensitive, field- and context-insensitive point-to analysis via dataflow, compute the points-to set for each variable at each distinct program point.
+A LLVM pass that implements a flow-sensitive, field- and context-insensitive point-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
 
 source code is in `src` directory, `testcase`  dir consists of 35 testcases.
 
@@ -33,7 +33,7 @@ $ make
 
 ### Example
 
-Take `testcast/test00.c` as a simple example.
+Take `testcase/test00.c` as a simple example.
 
 ```c
 // test00.c
@@ -70,7 +70,6 @@ int moo(char x)
 //14 : plus, minus
 //24 : foo
 //27 : foo
-
 
 ```
 
