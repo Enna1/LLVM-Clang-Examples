@@ -11,6 +11,7 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 - [custom-class-support-llvm-rtti](#custom-class-support-llvm-rtti)
 - [c-ast-interpreter](#c-ast-interpreter)
 - [dataflow-pointer-analysis](#dataflow-pointer-analysis)
+- [use-calledvaluepropagation-in-your-tool](#use-calledvaluepropagation-in-your-tool)
 
 ## custom-class-support-llvm-rtti
 
@@ -29,3 +30,9 @@ For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/c-ast-i
 A LLVM pass that implements a flow-sensitive, field- and context-insensitive point-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/dataflow-pointeranalysis
+
+## use-calledvaluepropagation-in-your-tool
+
+ sample code used to demonstrate how to call CalledValuePropagationPass in your own tool based LLVM.
+
+For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/use-calledvaluepropagation-in-your-tool
