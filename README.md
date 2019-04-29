@@ -1,6 +1,6 @@
 # LLVM-Clang-Examples
 
-A collection of code based on LLVM/Clang compilation libraries and tools.
+A collection of code based on LLVM/Clang compilation libraries and tools. There are also some useful tutorials about LLVM/clang in directory `tutorials/`.
 
 To install llvm, you can use the installer script `install-llvm-5.0.1.sh` that can be found in directory `utils/`.
 
@@ -8,10 +8,16 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 
 ## Contents
 
+- [tutorials](#tutorials)
 - [custom-class-support-llvm-rtti](#custom-class-support-llvm-rtti)
 - [c-ast-interpreter](#c-ast-interpreter)
 - [dataflow-pointer-analysis](#dataflow-pointer-analysis)
 - [use-calledvaluepropagation-in-your-tool](#use-calledvaluepropagation-in-your-tool)
+
+## tutorials
+
+- [LLVM IR Tutorial - Phis, GEPs and other things, oh my!](https://github.com/Enna1/LLVM-Clang-Examples/tree/master/tutorials/Tutorial-Bridgers-LLVM_IR_tutorial.pdf)
+- [How to Write a Clang Static Analyzer Checker in 24 Hours](https://github.com/Enna1/LLVM-Clang-Examples/tree/master/tutorials/Clang-Static-Analyzer-Checker24Hours.pdf)
 
 ## custom-class-support-llvm-rtti
 
@@ -33,6 +39,6 @@ For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/dataflo
 
 ## use-calledvaluepropagation-in-your-tool
 
- sample code used to demonstrate how to call CalledValuePropagationPass in your own tool based LLVM.
+Sample code used to demonstrate how to call CalledValuePropagationPass in your own tool based LLVM.
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/use-calledvaluepropagation-in-your-tool
