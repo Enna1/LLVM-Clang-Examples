@@ -13,6 +13,8 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 - [c-ast-interpreter](#c-ast-interpreter)
 - [dataflow-pointer-analysis](#dataflow-pointer-analysis)
 - [use-calledvaluepropagation-in-your-tool](#use-calledvaluepropagation-in-your-tool)
+- [break-constantexpr](#break-constantexpr)
+- [unify-functionexits](#unify-functionexits)
 
 ## tutorials
 
@@ -42,3 +44,15 @@ For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/dataflo
 Sample code used to demonstrate how to call CalledValuePropagationPass in your own tool based LLVM.
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/use-calledvaluepropagation-in-your-tool
+
+## break-constantexpr
+
+This BreakConstantExpr is a module pass that converts all constant expressions into instructions. 
+
+For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/break-constantexpr
+
+## unify-functionexits
+
+This UnifyFunctionExits module pass is just a wrapper for UnifyFunctionExitNodes function pass, used to ensure that functions have at most one return instruction in them.
+
+For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/unify-functionexits
