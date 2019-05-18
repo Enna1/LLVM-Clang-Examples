@@ -10,102 +10,6 @@ static ConstantExpr* hasConstantExpr(Value* V)
     return nullptr;
 }
 
-static Instruction* convertGEP(ConstantExpr* CE, Instruction* InsertPt)
-{
-    // Create iterators to the indices of the constant expression.
-    std::vector<Value*> Indices;
-    for (unsigned index = 1; index < CE->getNumOperands(); ++index)
-    {
-        Indices.push_back(CE->getOperand(index));
-    }
-    ArrayRef<Value*> arrayIdices(Indices);
-
-    // Make the new GEP instruction.
-    return (GetElementPtrInst::Create(nullptr, CE->getOperand(0), arrayIdices,
-                                      CE->getName(), InsertPt));
-}
-
-static Instruction* convertExpression(ConstantExpr* CE, Instruction* InsertPt)
-{
-    Instruction* NewInst = nullptr;
-    switch (CE->getOpcode())
-    {
-    case Instruction::GetElementPtr:
-    {
-        NewInst = convertGEP(CE, InsertPt);
-        break;
-    }
-
-    case Instruction::Add:
-    case Instruction::Sub:
-    case Instruction::Mul:
-    case Instruction::UDiv:
-    case Instruction::SDiv:
-    case Instruction::FDiv:
-    case Instruction::URem:
-    case Instruction::SRem:
-    case Instruction::FRem:
-    case Instruction::Shl:
-    case Instruction::LShr:
-    case Instruction::AShr:
-    case Instruction::And:
-    case Instruction::Or:
-    case Instruction::Xor:
-    {
-        Instruction::BinaryOps Op = (Instruction::BinaryOps)(CE->getOpcode());
-        NewInst = BinaryOperator::Create(Op, CE->getOperand(0), CE->getOperand(1),
-                                         CE->getName(), InsertPt);
-        break;
-    }
-
-    case Instruction::Trunc:
-    case Instruction::ZExt:
-    case Instruction::SExt:
-    case Instruction::FPToUI:
-    case Instruction::FPToSI:
-    case Instruction::UIToFP:
-    case Instruction::SIToFP:
-    case Instruction::FPTrunc:
-    case Instruction::FPExt:
-    case Instruction::PtrToInt:
-    case Instruction::IntToPtr:
-    case Instruction::BitCast:
-    {
-        Instruction::CastOps Op = (Instruction::CastOps)(CE->getOpcode());
-        NewInst = CastInst::Create(Op, CE->getOperand(0), CE->getType(), CE->getName(),
-                                   InsertPt);
-        break;
-    }
-
-    case Instruction::FCmp:
-    case Instruction::ICmp:
-    {
-        Instruction::OtherOps Op = (Instruction::OtherOps)(CE->getOpcode());
-        NewInst = CmpInst::Create(
-            Op, static_cast<llvm::CmpInst::Predicate>(CE->getPredicate()),
-            CE->getOperand(0), CE->getOperand(1), CE->getName(), InsertPt);
-        break;
-    }
-
-    case Instruction::Select:
-    {
-        NewInst = SelectInst::Create(CE->getOperand(0), CE->getOperand(1),
-                                     CE->getOperand(2), CE->getName(), InsertPt);
-        break;
-    }
-
-    case Instruction::ExtractElement:
-    case Instruction::InsertElement:
-    case Instruction::ShuffleVector:
-    case Instruction::InsertValue:
-    default:
-        assert(0 && "Unhandled constant expression!\n");
-        break;
-    }
-
-    return NewInst;
-}
-
 bool BreakConstantExpr::runOnModule(Module& module)
 {
     bool modified = false;
@@ -163,7 +67,11 @@ bool BreakConstantExpr::runOnModule(Module& module)
                     Instruction* InsertPt = PHI->getIncomingBlock(index)->getTerminator();
                     if (ConstantExpr* CE = hasConstantExpr(PHI->getIncomingValue(index)))
                     {
-                        Instruction* NewInst = convertExpression(CE, InsertPt);
+                        // ConstantExpr member function 'getAsInstruction()' returns an
+                        // Instruction which implements the same operation as this
+                        // ConstantExpr.
+                        Instruction* NewInst = CE->getAsInstruction();
+                        NewInst->insertBefore(InsertPt);
                         for (unsigned i2 = index; i2 < PHI->getNumIncomingValues(); ++i2)
                         {
                             if ((PHI->getIncomingBlock(i2)) ==
@@ -183,7 +91,11 @@ bool BreakConstantExpr::runOnModule(Module& module)
                     // constant expression.
                     if (ConstantExpr* CE = hasConstantExpr(I->getOperand(index)))
                     {
-                        Instruction* NewInst = convertExpression(CE, I);
+                        // ConstantExpr member function 'getAsInstruction()' returns an
+                        // Instruction which implements the same operation as this
+                        // ConstantExpr.
+                        Instruction* NewInst = CE->getAsInstruction();
+                        NewInst->insertBefore(I);
                         I->replaceUsesOfWith(CE, NewInst);
                         Worklist.push_back(NewInst);
                     }
@@ -193,3 +105,5 @@ bool BreakConstantExpr::runOnModule(Module& module)
     }
     return modified;
 }
+
+char BreakConstantExpr::ID = 0;

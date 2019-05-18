@@ -1,3 +1,6 @@
+#ifndef BREAKCONSTANTEXPR_H
+#define BREAKCONSTANTEXPR_H
+
 #include <llvm/IR/Module.h>
 #include <llvm/Pass.h>
 #include <llvm/IR/Instructions.h>
@@ -20,6 +23,4 @@ public:
     }
 };
 
-char BreakConstantExpr::ID = 0;
-
-void breakConstantExpr(llvm::Module &m);
+#endif
