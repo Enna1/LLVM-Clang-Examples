@@ -10,7 +10,7 @@ class BreakConstantExpr : public llvm::ModulePass
 {
 public:
     static char ID;
-    BreakConstantExpr() : ModulePass(ID) {}
+    BreakConstantExpr() : llvm::ModulePass(ID) {}
     llvm::StringRef getPassName() const
     {
         return "Convert constant expressions into regular instructions.";
