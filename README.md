@@ -10,14 +10,14 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 
 ## Contents
 
-- [Tutorials](#Tutorials)
-- [Custom class supporting LLVM RTTI](#Custom class supporting LLVM RTTI)
-- [C AST Interpreter](#C AST Interpreter)
-- [Dataflow Pointer Analysis](#Dataflow Pointer Analysis)
-- [Use CalledValuePropagationPass in your tool](#Use CalledValuePropagationPass in your tool)
-- [Break ConstantExpr](#Break ConstantExpr)
-- [Unify Function Exits](#Unify Function Exits)
-- [Run an LLVM Pass with Clang](#Run an LLVM Pass with Clang)
+- [Tutorials](#tutorials)
+- [Custom class supporting LLVM RTTI](#custom-class-supporting-llvm-rtti)
+- [C AST Interpreter](#c-ast-interpreter)
+- [Dataflow Pointer Analysis](#dataflow-pointer-analysis)
+- [Use CalledValuePropagationPass in your tool](#use-calledvaluepropagationpass-in-your-tool)
+- [Break ConstantExpr](#break-constantexpr)
+- [Unify Function Exits](#unify-function-exits)
+- [Run an LLVM Pass with Clang](#run-an-llvm-pass-with-clang)
 
 ## Tutorials
 
