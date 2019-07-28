@@ -14,8 +14,6 @@ To run this JIT for brainfuck language , you should input some valid  brainfuck 
 
 ### Build
 
-build this pass.
-
 ```shell
 $ cd /building-a-JIT-for-BF/bf-jit
 $ cmake .
