@@ -18,6 +18,7 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 - [Break ConstantExpr](#break-constantexpr)
 - [Unify Function Exits](#unify-function-exits)
 - [Run an LLVM Pass with Clang](#run-an-llvm-pass-with-clang)
+- [JIT for brainfuck](#jit-for-brainfuck)
 
 ## Tutorials
 
@@ -65,3 +66,9 @@ For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/unify-f
 Sample code used to demonstrate how to run your LLVM Pass with Clang.
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/clang-pass
+
+## JIT for brainfuck
+
+A JIT using LLVM for brainfuck language.
+
+For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/building-a-JIT-for-BF
