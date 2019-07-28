@@ -24,6 +24,7 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 
 - [LLVM IR Tutorial - Phis, GEPs and other things, oh my!](https://github.com/Enna1/LLVM-Clang-Examples/tree/master/tutorials/Tutorial-Bridgers-LLVM_IR_tutorial.pdf)
 - [How to Write a Clang Static Analyzer Checker in 24 Hours](https://github.com/Enna1/LLVM-Clang-Examples/tree/master/tutorials/Clang-Static-Analyzer-Checker24Hours.pdf)
+- [Scalar Evolution Demystified](https://github.com/Enna1/LLVM-Clang-Examples/blob/master/tutorials/Absar-ScalarEvolution.pdf)
 
 ## Custom class supporting LLVM RTTI
 
