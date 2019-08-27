@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.8)
 
-set(PROJECT_NAME test-cvp)
+set(PROJECT_NAME bf-jit)
 
 project(${PROJECT_NAME})
 
@@ -11,7 +11,7 @@ message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 include_directories(${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 
-add_executable(${PROJECT_NAME} FooPass.h main.cpp)
+add_executable(${PROJECT_NAME} BFJit.h main.cpp)
 
 llvm_map_components_to_libnames(DEP_LLVM_LIBS
   aggressiveinstcombine

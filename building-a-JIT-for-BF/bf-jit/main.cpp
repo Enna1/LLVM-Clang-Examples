@@ -1,4 +1,4 @@
-#include "bf_jit.h"
+#include "BFJit.h"
 #include <cassert>
 #include <fstream>
 #include <iostream>

@@ -5,7 +5,7 @@ If you want to run an LLVM pass while compiling a program, you need to do the fo
 1. Compile each source file to bitcode with `clang -c -emit-llvm code.c`
 2. Run your pass  with `opt -load yourpass.so -yourpass code.bc -o code_out.bc`
 3. Run the rest of the standard optimizations with `opt -O3 code_out.bc -o code_opt.bc`
-4. Compile the optimized bitcode into assembly with llc and then use your favorite assembler and linker to get the rest of the way to an executable
+4. Compile the optimized bitcode into assembly with `llc` and then use your favorite assembler and linker to get the rest of the way to an executable
 
 
 

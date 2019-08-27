@@ -1,18 +1,23 @@
+#include <llvm/IR/Function.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/IRReader/IRReader.h>
+#include <llvm/Pass.h>
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/ToolOutputFile.h>
-#include <llvm/Transforms/Scalar.h>
-#include <llvm/IR/Function.h>
-#include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
+
+// createPromoteMemoryToRegisterPass
+#if LLVM_VERSION_MAJOR >= 7
+#include <llvm/Transforms/Utils.h>
+#else
+#include <llvm/Transforms/Scalar.h>
+#endif
 
 #if LLVM_VERSION_MAJOR >= 4
 #include <llvm/Bitcode/BitcodeReader.h>
 #include <llvm/Bitcode/BitcodeWriter.h>
-
 #else
 #include <llvm/Bitcode/ReaderWriter.h>
 #endif

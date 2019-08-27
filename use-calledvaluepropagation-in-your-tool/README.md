@@ -24,7 +24,7 @@ Test this and get the output.
 
 ```shell
 $ cd /src
-$ ./test-cvp ../simple-arguments.ll
+$ ./test-cvp ../testcase/simple-arguments.ll
 ugt, ule, 
 ```
 

@@ -36,9 +36,11 @@ Build & Use:
 
 ```bash
 $ cd c-ast-interpreter
-$ cmake .
+$ mkdir build
+$ cd build
+$ cmake ..
 $ make
-$ ./ast-interpreter "`cat test/test0.c`"
+$ ./ast-interpreter "`cat ../test/test00.c`"
 ```
 
 
