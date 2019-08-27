@@ -13,6 +13,7 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 - [Tutorials](#tutorials)
 - [Custom class supporting LLVM RTTI](#custom-class-supporting-llvm-rtti)
 - [C AST Interpreter](#c-ast-interpreter)
+- [Comments Extractor](#comments-extractor)
 - [Dataflow Pointer Analysis](#dataflow-pointer-analysis)
 - [Use CalledValuePropagationPass in your tool](#use-calledvaluepropagationpass-in-your-tool)
 - [Break ConstantExpr](#break-constantexpr)
@@ -37,6 +38,12 @@ For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/custom-
 A basic tiny C language interpreter based on Clang.
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/c-ast-interpreter
+
+## Comments Extractor
+
+A simple tool based on clang's libtooling to grab all the comments from C source code.
+
+For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/comments-extractor
 
 ## Dataflow Pointer Analysis
 
