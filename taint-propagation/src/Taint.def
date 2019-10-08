@@ -1,0 +1,46 @@
+/**
+ * The following functions are considered to as taint-sensitve functions by default:
+ *
+ *
+ * Source functions| Critical argument(s) | Signature
+ * ----------------|----------------------|-----------
+ * fgetc           | -1(ret)              | int fgetc(FILE *stream)
+ * fgets           | -1, 0,               | char *fgets(char *s, int size, FILE *stream)
+ * fread           | 0                    | size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
+ * getc            | -1                   | int getc(FILE *stream)
+ * getchar         | -1                   | int getchar(void)
+ * read            | 1                    | size_t read(int fd, void *buf, size_t count)
+ * ungetc          | -1                   | int ungetc(int c, FILE *stream)
+ *
+ * Sink functions| Critical argument(s) | Signature
+ * --------------|----------------------|-----------
+ * fputc         | 0                    | int fputc(int c, FILE *stream)
+ * fputs         | 0                    | int fputs(const char *s, FILE *stream)
+ * fwrite        | 0                    | size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
+ * printf        | all                  | int printf(const char *format, ...)
+ * putc          | 0                    | int putc(int c, FILE *stream)
+ * putchar       | 0                    | int putchar(int c)
+ * puts          | 0                    | int puts(const char *s)
+ * write         | 1                    | size_t write(int fd, const void *buf, size_t count)
+ *
+ * User specified source and sink functions can be imported in this file.
+ *
+ */
+#ifndef HANDLE_TAINT_SOURCE
+#define HANDLE_TAINT_SOURCE(FUNC_NAME, ARGS)
+#endif
+#ifndef HANDLE_TAINT_PROPAGATION_LIBCALL
+#define HANDLE_TAINT_PROPAGATION_LIBCALL(FUNC_NAME, SRC_ARGS, DST_ARGS)
+#endif
+
+#define LIST(...) __VA_ARGS__
+
+HANDLE_TAINT_SOURCE("fgetc", LIST({ -1 }));
+HANDLE_TAINT_SOURCE("fgets", LIST({ -1, 0 }));
+HANDLE_TAINT_SOURCE("fread", LIST({ 0 }));
+HANDLE_TAINT_SOURCE("getc", LIST({ -1 }));
+HANDLE_TAINT_SOURCE("getchar", LIST({ -1 }));
+HANDLE_TAINT_SOURCE("read", LIST({ 1 }));
+HANDLE_TAINT_SOURCE("ungetc", LIST({ -1 }));
+
+HANDLE_TAINT_PROPAGATION_LIBCALL("memcpy", LIST({ 1 }), LIST({ 0 }));
