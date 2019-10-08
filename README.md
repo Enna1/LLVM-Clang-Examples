@@ -20,6 +20,7 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 - [Unify Function Exits](#unify-function-exits)
 - [Run an LLVM Pass with Clang](#run-an-llvm-pass-with-clang)
 - [JIT for brainfuck](#jit-for-brainfuck)
+- [Taint Propagation](#taint-propagation)
 
 ## Tutorials
 
@@ -47,7 +48,7 @@ For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/comment
 
 ## Dataflow Points-to Analysis
 
-A LLVM pass that implements a flow-sensitive, field- and context-insensitive points-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
+An LLVM pass that implements a flow-sensitive, field- and context-insensitive points-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/dataflow-points-to-analysis
 
@@ -80,3 +81,10 @@ For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/clang-p
 A JIT using LLVM for brainfuck language.
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/building-a-JIT-for-BF
+
+## Taint Propagation
+
+An LLVM transform pass implements a flow-sensitive, field- and context-insensitive taint propagation based on classic dataflow analysis. 
+
+For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/taint-propagation
+

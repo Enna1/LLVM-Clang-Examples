@@ -4,7 +4,7 @@
 
 LLVM/Clang Version: test on llvm5.0.1, llvm8.0.0
 
-This  llvm transform pass implements a flow-sensitive, field- and context-insensitive taint propagation based on classic dataflow analysis. 
+This llvm transform pass implements a flow-sensitive, field- and context-insensitive taint propagation based on classic dataflow analysis. 
 
 It attaches !taint metadata to instructions. For a given instruction, the metadata, if present, indicates the set of tainted operands before this instruction executed.
 
