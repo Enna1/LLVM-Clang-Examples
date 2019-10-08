@@ -1,10 +1,10 @@
-# Point-to Analysis via Dataflow
+# Points-to Analysis via Dataflow
 
 ### Description
 
 LLVM/Clang Version: 5.0.1
 
-A LLVM pass that implements a flow-sensitive, field- and context-insensitive point-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
+An LLVM pass that implements a flow-sensitive, field- and context-insensitive points-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
 
 source code is in `src` directory, `testcase`  dir consists of 35 testcases.
 
@@ -26,7 +26,7 @@ Print the callee functions at every call instructions.
 build this pass.
 
 ```shell
-$ cd /path-to-dataflow-pointeranalysis/src
+$ cd /path-to-this-analysis/src
 $ cmake .
 $ make
 ```
@@ -75,10 +75,10 @@ int moo(char x)
 
 
 
-First, build this dataflow-pointeranalysis pass.
+First, build this pass.
 
 ```shell
-$ cd /path-to-dataflow-pointeranalysis/src
+$ cd /path-to-this-analysis/src
 $ cmake .
 $ make
 ```
@@ -86,16 +86,16 @@ $ make
 Then, build unoptimized LLVM bytecode from test00.c
 
 ```shell
-$ cd /path-to-dataflow-pointeranalysis/testcase
+$ cd //path-to-this-analysis/testcase
 $ clang -emit-llvm -c -O0 -g3 test00.c -o test00.bc
 $ opt -mem2reg test00.bc -o test00-m2r.bc
 ```
 
-Finally, run this dataflow-pointeranalysis pass, and get the output.
+Finally, run this pass, and get the output.
 
 ```shell
-$ cd /path-to-dataflow-pointeranalysis/src
-$ ./df-pointeranalysis ../testcase/test00-m2r.bc
+$ cd //path-to-this-analysis/src
+$ ./df-pta ../testcase/test00-m2r.bc
 14 : plus, minus
 24 : foo
 27 : foo

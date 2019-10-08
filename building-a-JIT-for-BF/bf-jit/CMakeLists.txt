@@ -13,29 +13,9 @@ add_definitions(${LLVM_DEFINITIONS})
 
 add_executable(${PROJECT_NAME} BFJit.h main.cpp)
 
-llvm_map_components_to_libnames(DEP_LLVM_LIBS
-  aggressiveinstcombine
-  analysis
-  asmparser
-  bitreader
-  bitwriter
-  codegen
-  core
-  coroutines
-  instcombine
-  instrumentation
-  ipo
-  irreader
-  mc
-  objcarcopts
-  scalaropts
-  support
-  target
-  transformutils
-  vectorize
-)
+#LLVM_AVAILABLE_LIBS is set in LLVMConfig.cmake
 
-target_link_libraries(${PROJECT_NAME} ${DEP_LLVM_LIBS})
+target_link_libraries(${PROJECT_NAME} ${LLVM_AVAILABLE_LIBS})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -g -O0 -Wno-unused-parameter -fno-strict-aliasing -fno-exceptions -fno-rtti")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -g -O0 -fno-strict-aliasing -fno-exceptions -fno-rtti")
 message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")

@@ -14,7 +14,7 @@ E.g. use `$ ./install-llvm-5.0.1.sh 4 ~/` to build llvm-5.0.1 using 4 cores in y
 - [Custom class supporting LLVM RTTI](#custom-class-supporting-llvm-rtti)
 - [C AST Interpreter](#c-ast-interpreter)
 - [Comments Extractor](#comments-extractor)
-- [Dataflow Pointer Analysis](#dataflow-pointer-analysis)
+- [Dataflow Points-to Analysis](#dataflow-points-to-analysis)
 - [Use CalledValuePropagationPass in your tool](#use-calledvaluepropagationpass-in-your-tool)
 - [Break ConstantExpr](#break-constantexpr)
 - [Unify Function Exits](#unify-function-exits)
@@ -45,11 +45,11 @@ A simple tool based on clang's libtooling to grab all the comments from C source
 
 For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/comments-extractor
 
-## Dataflow Pointer Analysis
+## Dataflow Points-to Analysis
 
-A LLVM pass that implements a flow-sensitive, field- and context-insensitive point-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
+A LLVM pass that implements a flow-sensitive, field- and context-insensitive points-to analysis via dataflow, computing the points-to set for each variable at each distinct program point.
 
-For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/dataflow-pointeranalysis
+For detail, see https://github.com/Enna1/LLVM-Clang-Examples/tree/master/dataflow-points-to-analysis
 
 ## Use CalledValuePropagationPass in your tool
 
