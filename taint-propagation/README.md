@@ -2,7 +2,7 @@
 
 ### Description
 
-LLVM/Clang Version: test on llvm5.0.1, llvm8.0.0
+LLVM/Clang Version: test on llvm7.0.0, llvm8.0.0
 
 This llvm transform pass implements a flow-sensitive, field- and context-insensitive taint propagation based on classic dataflow analysis. 
 

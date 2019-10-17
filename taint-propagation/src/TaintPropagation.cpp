@@ -13,10 +13,10 @@
 #include "TaintPropagation.h"
 #include "llvm/Analysis/IteratedDominanceFrontier.h"
 #include "llvm/Analysis/SparsePropagation.h"
-#include "llvm/Analysis/ValueLatticeUtils.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/InstVisitor.h"
+#include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/MDBuilder.h"
 #include "llvm/Pass.h"
 #include "llvm/Transforms/IPO.h"
@@ -389,14 +389,20 @@ private:
     /// work list if it is not already executable.
     void markEdgeExecutable(BasicBlock *Source, BasicBlock *Dest);
 
+#if LLVM_VERSION_MAJOR >= 8
+    void getFeasibleSuccessors(Instruction &TI, SmallVectorImpl<bool> &Succs,
+                               bool AggressiveUndef);
+    void visitTerminator(Instruction &TI);
+#else
     /// getFeasibleSuccessors - Return a vector of booleans to indicate which
     /// successors are reachable from a given terminator instruction.
     void getFeasibleSuccessors(TerminatorInst &TI, SmallVectorImpl<bool> &Succs,
                                bool AggressiveUndef);
+    void visitTerminator(TerminatorInst &TI);
+#endif
 
     void visitInst(Instruction &I);
     void visitPHINode(PHINode &I);
-    void visitTerminator(TerminatorInst &TI);
 
     Value *getValueFromLatticeKey(TaintLatticeKey Key)
     {
@@ -912,6 +918,51 @@ void TaintSolver::markEdgeExecutable(BasicBlock *Source, BasicBlock *Dest)
     }
 }
 
+#if LLVM_VERSION_MAJOR >= 8
+void TaintSolver::getFeasibleSuccessors(Instruction &TI, SmallVectorImpl<bool> &Succs,
+                                        bool AggressiveUndef)
+{
+    Succs.resize(TI.getNumSuccessors());
+    if (TI.getNumSuccessors() == 0)
+        return;
+
+    if (auto *BI = dyn_cast<BranchInst>(&TI))
+    {
+        if (BI->isUnconditional())
+        {
+            Succs[0] = true;
+            return;
+        }
+
+        // Note: we always make all successors feasible for conditional branch
+        Succs[0] = Succs[1] = true;
+        return;
+    }
+
+    if (TI.isExceptionalTerminator())
+    {
+        Succs.assign(Succs.size(), true);
+        return;
+    }
+
+    if (isa<IndirectBrInst>(TI))
+    {
+        Succs.assign(Succs.size(), true);
+        return;
+    }
+
+    SwitchInst &SI = cast<SwitchInst>(TI);
+    auto *C = dyn_cast_or_null<Constant>(SI.getCondition());
+    if (!C || !isa<ConstantInt>(C))
+    {
+        // All destinations are executable!
+        Succs.assign(TI.getNumSuccessors(), true);
+        return;
+    }
+    SwitchInst::CaseHandle Case = *SI.findCaseValue(cast<ConstantInt>(C));
+    Succs[Case.getSuccessorIndex()] = true;
+}
+#else
 void TaintSolver::getFeasibleSuccessors(TerminatorInst &TI, SmallVectorImpl<bool> &Succs,
                                         bool AggressiveUndef)
 {
@@ -955,11 +1006,16 @@ void TaintSolver::getFeasibleSuccessors(TerminatorInst &TI, SmallVectorImpl<bool
     SwitchInst::CaseHandle Case = *SI.findCaseValue(cast<ConstantInt>(C));
     Succs[Case.getSuccessorIndex()] = true;
 }
+#endif
 
 bool TaintSolver::isEdgeFeasible(BasicBlock *From, BasicBlock *To, bool AggressiveUndef)
 {
     SmallVector<bool, 16> SuccFeasible;
+#if LLVM_VERSION_MAJOR >= 8
+    Instruction *TI = From->getTerminator();
+#else
     TerminatorInst *TI = From->getTerminator();
+#endif
     getFeasibleSuccessors(*TI, SuccFeasible, AggressiveUndef);
 
     for (unsigned i = 0, e = TI->getNumSuccessors(); i != e; ++i)
@@ -969,6 +1025,20 @@ bool TaintSolver::isEdgeFeasible(BasicBlock *From, BasicBlock *To, bool Aggressi
     return false;
 }
 
+#if LLVM_VERSION_MAJOR >= 8
+void TaintSolver::visitTerminator(Instruction &TI)
+{
+    SmallVector<bool, 16> SuccFeasible;
+    getFeasibleSuccessors(TI, SuccFeasible, true);
+
+    BasicBlock *BB = TI.getParent();
+
+    // Mark all feasible successors executable...
+    for (unsigned i = 0, e = SuccFeasible.size(); i != e; ++i)
+        if (SuccFeasible[i])
+            markEdgeExecutable(BB, TI.getSuccessor(i));
+}
+#else
 void TaintSolver::visitTerminator(TerminatorInst &TI)
 {
     SmallVector<bool, 16> SuccFeasible;
@@ -981,6 +1051,7 @@ void TaintSolver::visitTerminator(TerminatorInst &TI)
         if (SuccFeasible[i])
             markEdgeExecutable(BB, TI.getSuccessor(i));
 }
+#endif
 
 void TaintSolver::visitPHINode(PHINode &PN)
 {
@@ -1052,8 +1123,13 @@ void TaintSolver::visitInst(Instruction &I)
         if (ChangedValue.second != LatticeFunc->getUntrackedVal())
             UpdateState(ChangedValue.first, ChangedValue.second);
 
+#if LLVM_VERSION_MAJOR >= 8
+    if (I.isTerminator())
+        visitTerminator(I);
+#else
     if (TerminatorInst *TI = dyn_cast<TerminatorInst>(&I))
         visitTerminator(*TI);
+#endif
 }
 
 void TaintSolver::Solve()
