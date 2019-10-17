@@ -39,7 +39,7 @@ static std::unordered_map<Function *, DominatorTree> FnToDTMap;
 /// Return if any one of DefInsts can reach UseInst
 /// A DefInst can reach a UseInst only if the UseInst is dominated by the DefInst or one
 /// of its iterated dominance frontiers
-/// Note:
+/// NOTE:
 /// - Specail case: if DefInsts is empty, we consider DefInsts can reach UseInst
 /// - UseInst should not occur in DefInsts
 static bool reachable(const std::vector<Instruction *> &DefInsts, Instruction *UseInst)
@@ -251,8 +251,9 @@ private:
                    TaintSolver &TS);
 
     /// Handle StoreInst. If the stored value is Tainted, we set the state of the pointer
-    /// operand to Tainted and track the values that the pointer operand depends on. We
-    /// also set the state of the values that the pointer operand depends on to Tainted.
+    /// operand to Tainted and track the values that the pointer operand depends on.
+    /// We also set the state of the values that the pointer operand depends on to
+    /// Tainted and handle the merge of pointer type arguments in this function.
     void visitStore(StoreInst &I,
                     DenseMap<TaintLatticeKey, TaintLatticeVal> &ChangedValues,
                     TaintSolver &TS);
@@ -274,7 +275,6 @@ private:
 
     /// Handle ReturnInst. The function's return state is the merge of
     /// the returned value state and the function's return state.
-    /// We also handle pointer type arguments in this function.
     void visitReturn(ReturnInst &I,
                      DenseMap<TaintLatticeKey, TaintLatticeVal> &ChangedValues,
                      TaintSolver &TS);
@@ -591,6 +591,51 @@ void TaintLatticeFunc::visitStore(
         updateDependencyValueState(I.getPointerOperand(), TaintLatticeVal({ &I }),
                                    ChangedValues, TS);
     }
+
+    // If the type of some function arguments is pointer, inform the solver that the
+    // caller function is executable, and perform merges for these pointer arguments.
+    // NOTE: This part of code *must* be placed in `visitStore`
+    // FIXME: Is there any way to avoid perform merges for function pointer arguments when
+    // the pointer operand of StoreInst and the set of values that the pointer operand
+    // depends are unrelated to function pointer arguments?
+    SmallVector<Argument *, 4> AffectedFnPointerArguments;
+    if (auto *Arg = dyn_cast<Argument>(I.getPointerOperand()))
+    {
+        AffectedFnPointerArguments.push_back(Arg);
+    }
+    if (TS.hasDependency(I.getPointerOperand()))
+    {
+        SmallPtrSet<Value *, 16> Values = TS.getDependency(I.getPointerOperand());
+        for (Value *V : Values)
+        {
+            if (!V->getType()->isPointerTy())
+                continue;
+            if (auto *Arg = dyn_cast<Argument>(V))
+            {
+                AffectedFnPointerArguments.push_back(Arg);
+            }
+        }
+    }
+    Function *F = I.getFunction();
+    for (Argument *Arg : AffectedFnPointerArguments)
+    {
+        for (User *U : F->users())
+        {
+            if (auto CS = CallSite(U))
+            {
+                TS.MarkBlockExecutable(CS.getInstruction()->getParent());
+                auto ArgActual = TaintLatticeKey(CS.getArgument(Arg->getArgNo()),
+                                                 IPOGrouping::Register);
+                auto ArgFormal = TaintLatticeKey(Arg, IPOGrouping::Register);
+                if (TS.getValueState(ArgFormal).isTainted())
+                {
+                    ChangedValues[ArgActual] =
+                        MergeValues(TS.getValueState(ArgActual),
+                                    TaintLatticeVal({ CS.getInstruction() }));
+                }
+            }
+        }
+    }
 }
 
 void TaintLatticeFunc::visitMemTransfer(
@@ -702,7 +747,7 @@ void TaintLatticeFunc::visitCallSite(
         if (TS.getValueState(ArgActual).isTainted() &&
             reachable(TS.getValueState(ArgActual).getTaintedAtInsts(), I))
         {
-            // Note: call setTainted() to mark function arguments as tainted, and
+            // NOTE: call setTainted() to mark function arguments as tainted, and
             // `TaintedAtInsts` is empty
             ChangedValues[ArgFormal].setTainted();
         }
@@ -725,31 +770,6 @@ void TaintLatticeFunc::visitReturn(
     TaintSolver &TS)
 {
     Function *F = I.getFunction();
-
-    // If the type of some function arguments is pointer, inform the solver that the
-    // caller function is executable, and perform merges for these pointer arguments.
-    for (Argument &Arg : F->args())
-    {
-        if (!Arg.getType()->isPointerTy())
-            continue;
-        for (User *U : F->users())
-        {
-            if (auto CS = CallSite(U))
-            {
-                TS.MarkBlockExecutable(CS.getInstruction()->getParent());
-                auto ArgActual = TaintLatticeKey(CS.getArgument(Arg.getArgNo()),
-                                                 IPOGrouping::Register);
-                auto ArgFormal = TaintLatticeKey(&Arg, IPOGrouping::Register);
-                if (TS.getValueState(ArgFormal).isTainted())
-                {
-                    ChangedValues[ArgActual] =
-                        MergeValues(TS.getValueState(ArgActual),
-                                    TaintLatticeVal({ CS.getInstruction() }));
-                }
-            }
-        }
-    }
-
     if (F->getReturnType()->isVoidTy())
         return;
     auto RegI = TaintLatticeKey(I.getReturnValue(), IPOGrouping::Register);
@@ -934,7 +954,7 @@ void TaintSolver::getFeasibleSuccessors(Instruction &TI, SmallVectorImpl<bool> &
             return;
         }
 
-        // Note: we always make all successors feasible for conditional branch
+        // NOTE: we always make all successors feasible for conditional branch
         Succs[0] = Succs[1] = true;
         return;
     }
@@ -978,7 +998,7 @@ void TaintSolver::getFeasibleSuccessors(TerminatorInst &TI, SmallVectorImpl<bool
             return;
         }
 
-        // Note: we always make all successors feasible for conditional branch
+        // NOTE: we always make all successors feasible for conditional branch
         Succs[0] = Succs[1] = true;
         return;
     }
