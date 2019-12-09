@@ -11,7 +11,7 @@ It attaches !taint metadata to instructions. For a given instruction, the metada
 ### Build
 
 ```shell
-$ cd /building-a-JIT-for-BF/bf-jit
+$ cd /path/to/taint-propagation
 $ mkdir build && cd build
 $ cmake ..
 $ make
