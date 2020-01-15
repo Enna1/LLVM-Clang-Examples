@@ -1,19 +1,12 @@
-//===- CalledValuePropagation.h - Propagate called values -------*- C++ -*-===//
+//===- TaintPropagation.cpp - Propagate taint values -----*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
-// This file is distributed under the University of Illinois Open Source
-// License. See LICENSE.TXT for details.
-//
 //===----------------------------------------------------------------------===//
 //
-// This file implements a transformation that attaches !callees metadata to
-// indirect call sites. For a given call site, the metadata, if present,
-// indicates the set of functions the call site could possibly target at
-// run-time. This metadata is added to indirect call sites when the set of
-// possible targets can be determined by analysis and is known to be small. The
-// analysis driving the transformation is similar to constant propagation and
-// makes uses of the generic sparse propagation solver.
+// This file implements a transform pass that attaches !taint metadata
+// to instructions. For a given instruction, the metadata, if present, indicates
+// the set of tainted operands before this instruction executed.
 //
 //===----------------------------------------------------------------------===//
 
